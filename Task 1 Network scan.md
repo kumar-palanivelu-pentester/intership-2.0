@@ -210,7 +210,7 @@ Used mainly by IP cameras and video streaming devices.
 
 ## Nmap Terminal Screenshot
 
-*Add Nmap scan screenshot here.*
+![Nmap Scan Result](welcome-nmap.webp)
 
 ---
 
