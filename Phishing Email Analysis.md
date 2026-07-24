@@ -10,7 +10,7 @@
 
 The objective of this task is to analyze a suspicious email sample, identify phishing indicators, understand social engineering techniques, and document the findings through a structured email security investigation.
 
-This analysis helps in understanding phishing attacks, Business Email Compromise (BEC) techniques, and methods used by attackers to manipulate victims into performing unauthorized actions.
+This assessment focuses on identifying Business Email Compromise (BEC) techniques, email authentication checks, sender analysis, and threat indicators.
 
 ---
 
@@ -30,9 +30,9 @@ This analysis helps in understanding phishing attacks, Business Email Compromise
 
 | Tool | Purpose |
 |---|---|
-| WHOIS (who.is) | Domain registration investigation |
-| IPinfo.io | IP geolocation analysis |
-| Email Header Analysis | Sender and authentication verification |
+| WHOIS (who.is) | Domain registration analysis |
+| IPinfo.io | IP reputation and geolocation analysis |
+| Email Header Analysis | Email authentication verification |
 
 ---
 
@@ -42,44 +42,39 @@ This analysis helps in understanding phishing attacks, Business Email Compromise
 |---|---|
 | Email Subject | Invoice SI-4471 & Updated Bank Details for Future Payments |
 | Date | 07 July 2026, 3:28 PM IST |
-| Sender Name | Ramesh Kulkarni |
-| Sender Email | ramesh.kulkarni@apex-steeltraders.co |
-| Return-Path | ramesh.kulkarni@apex-steeltraders.co |
-| Reply-To | accounts.payments@apexsteel-billing.com |
+| Sender | r********.k********@apex-steeltraders.co |
+| Return-Path | r********.k********@apex-steeltraders.co |
+| Reply-To | a******.p********@apexsteel-billing.com |
 | Classification | Malicious |
 | Attack Category | Business Email Compromise (BEC) |
-| Attachment | invoice-si4471-apex-steel.pdf |
+| Attachment | invoice-si****-apex-steel.pdf |
 
 ---
 
 # Investigation Methodology
 
-The email sample was analyzed manually using the following approach:
+The email sample was analyzed using a manual investigation approach.
+
+The following steps were performed:
 
 1. Examined sender information.
-2. Compared sender domain and reply-to domain.
+2. Compared sender and Reply-To domains.
 3. Reviewed email authentication results.
-4. Analyzed email body for social engineering indicators.
-5. Investigated suspicious domains using WHOIS.
-6. Checked sending IP information.
-7. Evaluated attachment risk.
-8. Documented indicators of compromise.
+4. Analyzed email body content.
+5. Identified social engineering techniques.
+6. Performed domain investigation using WHOIS.
+7. Reviewed sending IP information.
+8. Documented phishing indicators and risks.
 
 ---
 
 # Email Overview
 
-The email impersonates a legitimate vendor, **Apex Steel Traders**, and attempts to convince the recipient to transfer an invoice payment of:
+The email impersonated a legitimate business vendor and attempted to redirect an invoice payment to a new bank account.
 
-```
+The message requested urgent payment processing and included an invoice attachment.
 
-Amount: ₹4,85,600
-
-```
-
-The attacker requested the recipient to update payment details and transfer funds to a new bank account mentioned in the attached invoice.
-
-This behavior matches a common **Business Email Compromise (BEC)** attack pattern.
+This behavior matches a **Business Email Compromise (BEC)** attack pattern where attackers manipulate employees into transferring money to fraudulent accounts.
 
 ---
 
@@ -89,14 +84,14 @@ This behavior matches a common **Business Email Compromise (BEC)** attack patter
 
 ```
 
-From:
-[ramesh.kulkarni@apex-steeltraders.co](mailto:ramesh.kulkarni@apex-steeltraders.co)
+Sender:
+r********.k********@apex-steeltraders.co
 
 ```
 
-The sender address appears legitimate because it uses a domain similar to the expected vendor domain.
+The sender address was designed to appear as a legitimate business communication.
 
-However, further analysis identified a suspicious mismatch.
+However, additional investigation identified suspicious characteristics.
 
 ---
 
@@ -106,24 +101,26 @@ However, further analysis identified a suspicious mismatch.
 
 ```
 
-[accounts.payments@apexsteel-billing.com](mailto:accounts.payments@apexsteel-billing.com)
+a******.p********@apexsteel-billing.com
 
 ```
 
 ## Finding
 
-The sender domain and reply-to domain are different.
+The sender domain and Reply-To domain were different.
 
 | Parameter | Domain |
 |---|---|
-| From Domain | apex-steeltraders.co |
+| Sender Domain | apex-steeltraders.co |
 | Reply-To Domain | apexsteel-billing.com |
 
-## Risk
+## Security Impact
 
-This technique is commonly used in phishing and BEC attacks.
+This technique is commonly used in phishing campaigns.
 
-Victims may believe they are communicating with the legitimate vendor while responses are redirected to the attacker-controlled mailbox.
+The attacker allows the email to appear legitimate while redirecting replies to an attacker-controlled mailbox.
+
+**Risk Level: Critical**
 
 ---
 
@@ -137,7 +134,9 @@ Result: PASS
 
 ```
 
-The email passed SPF validation for the sender domain.
+The email passed SPF verification for the sender domain.
+
+---
 
 ## DKIM
 
@@ -147,7 +146,9 @@ Result: PASS
 
 ```
 
-The email contains a valid DKIM signature.
+The email contained a valid DKIM signature.
+
+---
 
 ## DMARC
 
@@ -157,27 +158,33 @@ Result: PASS
 
 ```
 
-The email passed DMARC verification.
+The email passed DMARC validation.
+
+---
 
 ## Analysis
 
-Although SPF, DKIM, and DMARC passed, the email can still be malicious.
+Email authentication passing does not always indicate that an email is safe.
 
-Authentication mechanisms verify email authorization, but they do not confirm whether the sender is trustworthy or whether the message content is legitimate.
+SPF, DKIM, and DMARC verify email authorization but cannot detect:
+
+- Vendor impersonation
+- Social engineering
+- Fraudulent payment requests
 
 ---
 
 # Email Body Analysis
 
-## Observed Content
+## Observed Characteristics
 
-The email states:
+The email contained:
 
 - Invoice payment request
-- Updated bank account information
-- Immediate payment requirement
-- Financial urgency
-- Request for confirmation after transfer
+- Bank account update request
+- Urgent payment timeline
+- Financial pressure tactics
+- Request for confirmation after payment
 
 ---
 
@@ -185,11 +192,10 @@ The email states:
 
 | Indicator | Observation | Risk |
 |---|---|---|
-| Urgency | Payment required on priority | High |
-| Financial Request | ₹4,85,600 invoice payment | Critical |
-| Account Change Request | New bank details provided | Critical |
-| Authority Impersonation | Pretends to be vendor accounts department | High |
-| Business Context | Uses invoice-related communication | High |
+| Urgency | Requested priority payment | High |
+| Financial Request | Invoice payment involved | Critical |
+| Account Change Request | New payment details provided | Critical |
+| Vendor Impersonation | Pretended to be supplier | High |
 | Deadline Pressure | Quarter closing reference | Medium |
 
 ---
@@ -220,7 +226,7 @@ Sends Fake Invoice Update Email
 Victim Changes Payment Details
 |
 |
-Money Transferred To Attacker Account
+Funds Redirected To Attacker
 
 ```
 
@@ -228,33 +234,33 @@ Money Transferred To Attacker Account
 
 # Attachment Analysis
 
-## Attachment Identified
+## Identified Attachment
 
 ```
 
-File Name:
-invoice-si4471-apex-steel.pdf
+File:
+invoice-si****-apex-steel.pdf
 
 ```
 
 ## Analysis Status
 
-Attachment was identified during the investigation.
+The attachment was identified during email investigation.
 
-However, static file analysis or malware analysis was not performed as part of this assessment.
+However, malware analysis and static file analysis were not performed as part of this assessment.
 
 Recommended future analysis:
 
-- File hash calculation
-- PDF metadata inspection
-- URL extraction
-- Malware sandbox analysis
+- Calculate file hash
+- Check PDF metadata
+- Extract embedded URLs
+- Perform sandbox analysis
 
 ---
 
 # OSINT Verification
 
-## WHOIS Analysis
+## WHOIS Investigation
 
 Tool Used:
 
@@ -275,18 +281,18 @@ apexsteel-billing.com
 
 Observation:
 
-- Reply-To domain differs from the original sender domain.
-- Domain registration information requires further verification.
+- Reply-To domain differed from sender domain.
+- Domain ownership information should be verified during incident response.
 
 ---
 
-# IP Geolocation Analysis
+# IP Analysis
 
 Tool Used:
 
 ```
 
-ipinfo.io
+IPinfo.io
 
 ```
 
@@ -294,15 +300,15 @@ Sending IP:
 
 ```
 
-103.22.8.190
+103.22.xxx.xxx
 
 ```
 
 Observation:
 
-The sending infrastructure information was reviewed during investigation.
+The sending infrastructure information was reviewed as part of the investigation.
 
-IP location alone is not considered a standalone indicator of malicious activity; it must be evaluated with other evidence.
+IP location alone is not considered a standalone phishing indicator and must be analyzed with other evidence.
 
 ---
 
@@ -310,11 +316,11 @@ IP location alone is not considered a standalone indicator of malicious activity
 
 | Type | Indicator |
 |---|---|
-| Sender Email | ramesh.kulkarni@apex-steeltraders.co |
-| Reply-To Email | accounts.payments@apexsteel-billing.com |
+| Sender Domain | apex-steeltraders.co |
+| Reply-To Domain | apexsteel-billing.com |
 | Suspicious Domain | apexsteel-billing.com |
-| Attachment | invoice-si4471-apex-steel.pdf |
-| Payment Amount | ₹4,85,600 |
+| Attachment | invoice-si****-apex-steel.pdf |
+| Attack Type | BEC / Invoice Fraud |
 
 ---
 
@@ -323,11 +329,10 @@ IP location alone is not considered a standalone indicator of malicious activity
 | Finding | Status | Severity |
 |---|---|---|
 | Reply-To Domain Mismatch | Detected | Critical |
-| Fake Vendor Communication | Detected | High |
-| Bank Detail Change Request | Detected | Critical |
-| Payment Urgency | Detected | High |
-| Invoice-Based Social Engineering | Detected | High |
-| Suspicious Attachment | Requires Analysis | Medium |
+| Vendor Impersonation | Detected | High |
+| Payment Redirection Request | Detected | Critical |
+| Social Engineering Language | Detected | High |
+| Suspicious Attachment | Requires Further Analysis | Medium |
 
 ---
 
@@ -337,7 +342,6 @@ IP location alone is not considered a standalone indicator of malicious activity
 |---|---|
 | Attack Type | Business Email Compromise |
 | Financial Risk | Critical |
-| Data Exposure Risk | Medium |
 | User Manipulation Risk | High |
 | Overall Severity | Critical |
 
@@ -345,31 +349,27 @@ IP location alone is not considered a standalone indicator of malicious activity
 
 # MITRE ATT&CK Mapping
 
-## Technique: Phishing
-
-**T1566 - Phishing**
+## T1566 - Phishing
 
 Attackers use phishing emails to manipulate users into performing unauthorized actions.
 
 ---
 
-## Technique: Spearphishing Link / Attachment
+## T1566.001 - Spearphishing Attachment
 
-**T1566.001 - Spearphishing Attachment**
-
-The attacker used an invoice PDF attachment as part of the social engineering attempt.
+The attacker used an invoice document attachment as part of the phishing attempt.
 
 ---
 
 # Recommended Actions
 
-- Verify bank account changes through an independent communication channel.
-- Do not trust payment updates received only through email.
-- Block suspicious domains identified during analysis.
-- Train finance teams against invoice fraud attacks.
-- Enable email security monitoring.
+- Verify bank account changes through a trusted communication channel.
+- Avoid processing payment changes based only on email requests.
+- Block suspicious domains identified during investigation.
+- Conduct phishing awareness training for employees.
 - Implement multi-person approval for high-value payments.
-- Report suspected phishing attempts to the security team.
+- Enable email security monitoring.
+- Report suspicious emails to the security team.
 
 ---
 
@@ -414,28 +414,27 @@ IP Information Analysis
 # Key Learnings
 
 - Learned how to identify Business Email Compromise attacks.
-- Understood the importance of Reply-To verification.
-- Learned that SPF, DKIM, and DMARC alone cannot confirm email legitimacy.
+- Understood Reply-To spoofing techniques.
+- Learned that SPF, DKIM, and DMARC alone cannot guarantee email legitimacy.
 - Practiced OSINT-based email investigation.
-- Improved phishing detection and threat analysis skills.
+- Improved phishing detection skills.
 
 ---
 
 # Conclusion
 
-The analyzed email was identified as a **Business Email Compromise (BEC) attack** attempting to redirect a legitimate invoice payment to an unauthorized bank account.
+The analyzed email was identified as a **Business Email Compromise (BEC) phishing attempt** designed to redirect invoice payments to an unauthorized account.
 
-The main indicators were the Reply-To domain mismatch, payment redirection request, urgency tactics, and vendor impersonation techniques.
+The primary indicators included Reply-To domain mismatch, vendor impersonation, payment urgency, and financial manipulation techniques.
 
-This investigation demonstrates the importance of email verification, user awareness, and security controls in preventing phishing-based financial fraud.
+This investigation demonstrates the importance of email verification, security awareness, and proper payment validation procedures in preventing phishing-based financial fraud.
 
 ---
 
 # References
 
-- Nmap Official Documentation  
-- OWASP Phishing Awareness Guidelines  
-- MITRE ATT&CK Framework  
-- WHOIS Domain Lookup  
+- MITRE ATT&CK Framework
+- OWASP Phishing Awareness Guidelines
+- WHOIS Domain Lookup
 - IPinfo.io
 ```
